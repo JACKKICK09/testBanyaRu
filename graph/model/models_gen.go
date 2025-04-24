@@ -65,3 +65,13 @@ type ToolInput struct {
 	Title       string  `json:"title"`
 	Description *string `json:"description,omitempty"`
 }
+
+type UpdateMain struct {
+	ID     *string       `json:"id,omitempty"`
+	Title  string        `json:"title"`
+	SubID  *int32        `json:"subId,omitempty"`
+	SubObj *string       `json:"subObj,omitempty"`
+	Tools  []*ToolInput  `json:"tools,omitempty"`
+	Tables []*TableInput `json:"tables,omitempty"`
+	Chairs []*ChairInput `json:"chairs,omitempty"`
+}

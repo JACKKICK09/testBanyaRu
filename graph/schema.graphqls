@@ -54,7 +54,7 @@ input ChairInput {
 
 type Mutation {
   createMain(input: MainInput!): Main!
-  updateMain(id: ID!, input: MainInput!): Main!
+  updateMain(id: ID!, input: UpdateMain!): Main!
   deleteMain(id: ID!): MainDelete!
 }
 
@@ -64,6 +64,16 @@ type MainDelete {
 
 input MainInput {
   id: ID!
+  title: String!
+  subId: Int
+  subObj: JSON
+  tools: [ToolInput!]
+  tables: [TableInput!]
+  chairs: [ChairInput!]
+}
+
+input UpdateMain {
+  id: ID
   title: String!
   subId: Int
   subObj: JSON

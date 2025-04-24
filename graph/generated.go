@@ -73,7 +73,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateMain func(childComplexity int, input model.MainInput) int
 		DeleteMain func(childComplexity int, id string) int
-		UpdateMain func(childComplexity int, id string, input model.MainInput) int
+		UpdateMain func(childComplexity int, id string, input model.UpdateMain) int
 	}
 
 	Query struct {
@@ -94,7 +94,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateMain(ctx context.Context, input model.MainInput) (*model.Main, error)
-	UpdateMain(ctx context.Context, id string, input model.MainInput) (*model.Main, error)
+	UpdateMain(ctx context.Context, id string, input model.UpdateMain) (*model.Main, error)
 	DeleteMain(ctx context.Context, id string) (*model.MainDelete, error)
 }
 type QueryResolver interface {
@@ -252,7 +252,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMain(childComplexity, args["id"].(string), args["input"].(model.MainInput)), true
+		return e.complexity.Mutation.UpdateMain(childComplexity, args["id"].(string), args["input"].(model.UpdateMain)), true
 
 	case "Query.getMain":
 		if e.complexity.Query.GetMain == nil {
@@ -313,6 +313,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputMainInput,
 		ec.unmarshalInputTableInput,
 		ec.unmarshalInputToolInput,
+		ec.unmarshalInputUpdateMain,
 	)
 	first := true
 
@@ -506,13 +507,13 @@ func (ec *executionContext) field_Mutation_updateMain_argsID(
 func (ec *executionContext) field_Mutation_updateMain_argsInput(
 	ctx context.Context,
 	rawArgs map[string]any,
-) (model.MainInput, error) {
+) (model.UpdateMain, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNMainInput2testBanyaRuᚋgraphᚋmodelᚐMainInput(ctx, tmp)
+		return ec.unmarshalNUpdateMain2testBanyaRuᚋgraphᚋmodelᚐUpdateMain(ctx, tmp)
 	}
 
-	var zeroVal model.MainInput
+	var zeroVal model.UpdateMain
 	return zeroVal, nil
 }
 
@@ -1373,7 +1374,7 @@ func (ec *executionContext) _Mutation_updateMain(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMain(rctx, fc.Args["id"].(string), fc.Args["input"].(model.MainInput))
+		return ec.resolvers.Mutation().UpdateMain(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UpdateMain))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4032,6 +4033,75 @@ func (ec *executionContext) unmarshalInputToolInput(ctx context.Context, obj any
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateMain(ctx context.Context, obj any) (model.UpdateMain, error) {
+	var it model.UpdateMain
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "title", "subId", "subObj", "tools", "tables", "chairs"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "subId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subId"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SubID = data
+		case "subObj":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subObj"))
+			data, err := ec.unmarshalOJSON2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SubObj = data
+		case "tools":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tools"))
+			data, err := ec.unmarshalOToolInput2ᚕᚖtestBanyaRuᚋgraphᚋmodelᚐToolInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Tools = data
+		case "tables":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tables"))
+			data, err := ec.unmarshalOTableInput2ᚕᚖtestBanyaRuᚋgraphᚋmodelᚐTableInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Tables = data
+		case "chairs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("chairs"))
+			data, err := ec.unmarshalOChairInput2ᚕᚖtestBanyaRuᚋgraphᚋmodelᚐChairInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Chairs = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -4874,6 +4944,11 @@ func (ec *executionContext) unmarshalNToolInput2ᚖtestBanyaRuᚋgraphᚋmodel�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNUpdateMain2testBanyaRuᚋgraphᚋmodelᚐUpdateMain(ctx context.Context, v any) (model.UpdateMain, error) {
+	res, err := ec.unmarshalInputUpdateMain(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -5214,6 +5289,22 @@ func (ec *executionContext) unmarshalOChairInput2ᚕᚖtestBanyaRuᚋgraphᚋmod
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalID(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalID(*v)
+	return res
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {

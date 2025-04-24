@@ -53,16 +53,24 @@ func Connect() *Database {
 }
 
 func (db *Database) Create(ctx context.Context, input model.MainInput) (*model.Main, error) {
-	id := uuid.New().String()
-	now := time.Now()
+	var id string
+	if input.ID != "" {
+		id = input.ID
+	} else {
+		id = uuid.New().String()
+	}
 
-	subObj := map[string]interface{}{"tools": input.Tools, "tables": input.Tables, "chairs": input.Chairs}
+	now := time.Now()
+	subObj := map[string]interface{}{
+		"tools":  input.Tools,
+		"tables": input.Tables,
+		"chairs": input.Chairs,
+	}
 	subObjJSON, _ := json.Marshal(subObj)
 
 	var m model.Main
 	var subObjRaw []byte
-	var createdAt time.Time
-	var updatedAt time.Time
+	var createdAt, updatedAt time.Time
 	var deletedAt *time.Time
 
 	err := db.psql.QueryRow(ctx, `
@@ -70,10 +78,11 @@ func (db *Database) Create(ctx context.Context, input model.MainInput) (*model.M
         VALUES ($1, $2, $3, $4, $5, $5)
         RETURNING id, title, sub_id, sub_obj, created_at, updated_at, deleted_at
     `, id, input.Title, input.SubID, subObjJSON, now).Scan(
-		&m.ID, &m.Title, &m.SubID, &subObjRaw, &createdAt, &updatedAt, &deletedAt,
+		&m.ID, &m.Title, &m.SubID, &subObjRaw,
+		&createdAt, &updatedAt, &deletedAt,
 	)
 	if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
-		return nil, fmt.Errorf("ID %s already exists", id)
+		return nil, fmt.Errorf("ID %s уже занят", id)
 	}
 	if err != nil {
 		return nil, err
@@ -128,22 +137,26 @@ func (db *Database) Get(ctx context.Context, id string) (*model.Main, error) {
 	return &m, nil
 }
 
-func (db *Database) Update(ctx context.Context, id string, input model.MainInput) (*model.Main, error) {
+func (db *Database) Update(ctx context.Context, id string, input model.UpdateMain) (*model.Main, error) {
+	updateID := id
+	if input.ID != nil && *input.ID != "" {
+		updateID = *input.ID
+	}
 	now := time.Now()
 	subObj := map[string]interface{}{"tools": input.Tools, "tables": input.Tables, "chairs": input.Chairs}
 	subObjJSON, _ := json.Marshal(subObj)
 
 	var m model.Main
 	var subObjRaw []byte
-	var createdAt time.Time
-	var updatedAt time.Time
+	var createdAt, updatedAt time.Time
 	var deletedAt *time.Time
 
 	err := db.psql.QueryRow(ctx, `
-        UPDATE main SET title = $1, sub_id = $2, sub_obj = $3, updated_at = $4
-        WHERE id = $5
-        RETURNING id, title, sub_id, sub_obj, created_at, updated_at, deleted_at
-    `, input.Title, input.SubID, subObjJSON, now, id).Scan(
+    UPDATE main
+    SET title = $1, sub_id = $2, sub_obj = $3, updated_at = $4
+    WHERE id = $5
+    RETURNING id, title, sub_id, sub_obj, created_at, updated_at, deleted_at
+`, input.Title, input.SubID, subObjJSON, now, updateID).Scan(
 		&m.ID, &m.Title, &m.SubID, &subObjRaw, &createdAt, &updatedAt, &deletedAt,
 	)
 	if err != nil {

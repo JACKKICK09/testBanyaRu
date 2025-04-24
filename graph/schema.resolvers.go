@@ -19,7 +19,7 @@ func (r *mutationResolver) CreateMain(ctx context.Context, input model.MainInput
 }
 
 // UpdateMain is the resolver for the updateMain field.
-func (r *mutationResolver) UpdateMain(ctx context.Context, id string, input model.MainInput) (*model.Main, error) {
+func (r *mutationResolver) UpdateMain(ctx context.Context, id string, input model.UpdateMain) (*model.Main, error) {
 	result, err := db.Update(ctx, id, input)
 	return result, err
 }
@@ -44,3 +44,13 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	var db = database.Connect()
+*/
