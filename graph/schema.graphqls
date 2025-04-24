@@ -1,0 +1,73 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+scalar JSON
+
+type Main {
+  id: ID!
+  title: String!
+  subId: Int
+  subObj: JSON
+  tools: [Tool!]
+  tables: [Table!]
+  chairs: [Chair!]
+  createdAt: String!
+  updatedAt: String!
+  deletedAt: String
+}
+
+type Tool {
+  id: ID!
+  title: String!
+  description: String
+}
+
+type Table {
+  id: ID!
+  name: String!
+}
+
+type Chair {
+  id: ID!
+  name: String!
+  type: String!
+}
+
+type Query {
+  getMain(id: ID!): Main
+}
+
+input ToolInput {
+  title: String!
+  description: String
+}
+
+input TableInput {
+  name: String!
+}
+
+input ChairInput {
+  name: String!
+  type: String!
+}
+
+type Mutation {
+  createMain(input: MainInput!): Main!
+  updateMain(id: ID!, input: MainInput!): Main!
+  deleteMain(id: ID!): MainDelete!
+}
+
+type MainDelete {
+  deleteId: String!
+}
+
+input MainInput {
+  id: ID!
+  title: String!
+  subId: Int
+  subObj: JSON
+  tools: [ToolInput!]
+  tables: [TableInput!]
+  chairs: [ChairInput!]
+}
