@@ -1,0 +1,53 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Vendor directory
+/vendor/
+
+# Go workspace file
+go.work
+
+# Environment files
+#.env
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# Migrations backups and temp files
+/migrations/*.tmp
+/migrations/*.bak
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.iml
+
+# Node modules (if any frontend code)
+/node_modules/
+
+# Docker overrides
+docker-compose.override.yml
+
+# Generated GraphQL code
+**/*.gen.go
+
+# Coverage reports
+coverage.out
+doc/coverage/
+
+# Miscellaneous
+*.swp
+*~
+.DS_Store
